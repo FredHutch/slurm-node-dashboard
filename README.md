@@ -106,6 +106,12 @@ SLURM_API_TOKEN="your-slurm-api-token"
 # Development settings
 NODE_ENV="production"
 REACT_EDITOR="code"
+
+# Plugins
+NEXT_PUBLIC_ENABLE_OPENAI_PLUGIN=false
+
+# Database
+POSTGRES_URL="postgresql://user:password@host:5432/db"
 ```
 
 </details>
