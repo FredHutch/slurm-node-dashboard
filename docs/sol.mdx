@@ -1,0 +1,80 @@
+---
+title: "Sol Supercomputer"
+description: "Details about the sol supercomputer"
+url: "https://asurc.atlassian.net/wiki/spaces/RC/pages/1642102826/Requesting+Resources+on+RC+Supercomputers"
+---
+
+## Overview
+
+In order to maximize the output of the Sol supercomputer as a whole, users are incentivized to make their resource requests as close as possible to the actually required amount. A number of different techniques can be used to dial-in your scripts so as to meet the following goals: ensure job completion, speed up time-to-allocation, and improve individual throughput. These techniques will be described at the end of this document. First, let’s see the different ways you might request resources on Sol:
+
+## Selecting a Partition
+
+There are two primary partitions that encompass almost all resources in Sol: general and htc.
+
+**HTC**: permits your job to run on nearly every node, with a hard-capped limit of 4:00:00 (4 hours) per job step.
+**General**: permits your job to run up to 7-00:00:00. This partition includes almost all nodes owned by Research Computing including GPUs and FPGAs. When in doubt, use general:
+#SBATCH -p general
+
+Other partitions exist, such as highmem which is mutually exclusive from general; this includes nodes that have up to 2TB of system memory (RAM). Typically, unless your job cannot complete without > 512 GB (what most general nodes have), it is recommended to use general, as the available capacity is greater by a factor of 40.
+
+## Requesting CPUs
+
+Example jobs: mpi, htc
+
+By default, Slurm will attempt to schedule jobs as locally proximate as possible, so requesting -c 5 cores will try to get 5 cores on one node -N 1, unless otherwise specified.
+
+To request a given number of cpus sharing the same node, you can use the following in your SBATCH:
+#SBATCH -c 5
+#SBATCH -N 1
+
+To request a given number of cpus spread across multiple nodes, you can use the following:
+#SBATCH -c 5 # CPUs per TASK
+#SBATCH -n 10 # number of TASKS
+#SBATCH -N 10 # number of nodes to allow tasks to spread across (MIN & MAX)
+
+The above example will allocate 50 cores, 5 cores per task on 10 independent nodes.
+
+Take note of the inclusion or omission of -N:
+#SBATCH -c 5 # CPUs per TASK
+#SBATCH -n 10 # number of TASKS
+
+This reduced example will still allocate 50 cores, 5 cores per task on any number of available nodes. Note, that unless you are using MPI-aware software, you will likely prefer to always add -N 1, to ensure that each job worker has sufficient connectivity to each other.
+
+As a general rule, CPU-only nodes have 128 cores and GPU-present nodes have 48 cores.
+
+## Requesting Memory
+
+On Sol, cores and memory are de-coupled: if you need only a single CPU core but ample memory, you can do so like this:
+#SBATCH -c 1
+#SBATCH -N 1
+#SBATCH --mem=120G
+
+The previous Agave supercomputer handled memory differently, ensuring additional cores per memory requested (e.g., “4.5 gb per core”) regardless of the use of the cores; this is not the case on Sol. Users are encouraged to determine approximate resources for both CPUs and memory, for inclusion at submission time.
+
+Every single node in Sol has at least 500GB of memory, with High Memory Nodes (h00* or ch00*) having anywhere from 1TB to 2TB.
+
+## Requesting GPUs
+
+Sol offers 224 Nvidia A100s and 15 A30s across 61 nodes (4xGPU per node). These GPUs are publicly available and usable up to the maximum of the public QOS of 7 day walltime in the general partition.
+
+Requesting GPUs can be done with interactive:
+
+interactive -G a100:1
+-- or --
+interactive -G a30:1
+
+SBATCH scripts can request GPUs with this format: -G [type]:[qty]
+#SBATCH -N 1
+...
+#SBATCH -G a100:1
+
+Alternative form with gres:
+#SBATCH --gres=a30:2 # for 2 a30s
+--or--
+#SBATCH --gres=a100:4 # for 4 a100s
+--or--
+#SBATCH --gres=1g.10gb:3 # for 3 discrete slices of a100 (a100 divided into 7 slices)
+
+Alternatively, if a GPU of any size is permissible (because the smallest size @ 10GB is enough), you can use this format for the first-available GPU of any type:
+#SBATCH -G 1

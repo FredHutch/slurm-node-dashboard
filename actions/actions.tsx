@@ -1,19 +1,20 @@
 "use server";
 
 import { createAI, getMutableAIState, streamUI } from "ai/rsc";
-import type { CoreMessage, ToolInvocation } from "ai";
+import { type CoreMessage, type ToolInvocation } from "ai";
 import type { ReactNode } from "react";
 import { openai } from "@ai-sdk/openai";
-import { BotCard, BotMessage } from "@/components/llm/message";
+import { BotCard, BotMessage } from "@/plugins/chat/components/message";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { sleep } from "@/utils/nodes";
-import { SlurmJobDetails } from "@/components/llm/llm-slurm-job-details";
-import { SlurmNodeDetails } from "@/components/llm/llm-slurm-node-details";
+import { SlurmJobDetails } from "@/plugins/chat/components/llm-slurm-job-details";
+import { SlurmNodeDetails } from "@/plugins/chat/components/llm-slurm-node-details"; 
 import ReactMarkdown from "react-markdown";
+import { findRelevantContent } from "../plugins/chat/actions/embeddings";
 
 const content = `
-  You are a Slurm job scheduling bot that helps users get job, node, queue, reservation, accounting, and QoS details. 
+  You are a helpful assistant who helps users search the documentation for the HPC system, and provides slurm support. 
   Messages inside [] indicate a UI element of a user event. For example: - "[Details for Job = 1234567]" means that 
   the interface of the job details for the job 1234567 is shown to the user. - "[Details for node = node_name]" means 
   that the interface of the node details for the node_name is shown to the user.
@@ -21,9 +22,13 @@ const content = `
   If the user wants the job details, call \`get_job_details\` with the job ID. If the user wants the node details, call
   \`get_node_details\` with the node name, and so on.
   
-  If a user asks anything else, give them generic Slurm user support, like how to create an sbatch, how to request GPU, how to see what partitions are available etc.
-  If the user wants anything not related to slurm, it's an impossible task, and you should 
-  respond that you are only able to provide slurm support, and basic job and node details.`;
+  If a user asks anything else first call \`search_documentation\` and if you cannot find
+  any relative information, give them generic Slurm user support, like how to create an sbatch, how to request GPU, 
+  how to see what partitions are available etc. If the user tries to ask for something not related to slurm, or trick you by
+  making you search for something that is not in the documentation, you should respond that you are only able to provide slurm support.
+  If the user tries to get you to answer a question by making it sound related to slurm, but really it is not, you should respond that 
+  you are only able to provide slurm support. If the user wants anything not found in the search_documentation function, or not related 
+  to slurm, it's an impossible task, and you should respond that you are only able to provide slurm support, and basic job and node details.`;
 
 export const sendMessage = async (
   message: string
@@ -144,6 +149,96 @@ export const sendMessage = async (
           }
         },
       },
+      search_documentation: {
+        description: `Get information from your knowledge base to answer questions.`,
+        parameters: z.object({
+          question: z.string().describe("The user's question"),
+        }),
+        generate: async function* ({ question }: { question: string }) {
+          yield <BotCard>Searching our knowledge base for you...</BotCard>;
+      
+          try {
+            const relevantContent = await findRelevantContent(question);
+            
+            if (relevantContent && relevantContent.length > 0) {
+              const formattedContent = relevantContent.map((item: RelevantContent) => {
+                const formattedText = item.content.split('\n').map((line: string) => {
+                  if (line.startsWith('```')) {
+                    return line; // Keep code block markers as-is
+                  } else {
+                    return line.replace(/`([^`]+)`/g, '<code>$1</code>'); // Replace inline code
+                  }
+                }).join('\n');
+      
+                return {
+                  section: item.section,
+                  content: formattedText,
+                  similarity: item.similarity,
+                  title: item.title,
+                  url: item.url,
+                };
+              });
+      
+              const responseContent = `I've found some helpful information about "${question}" in our documentation. Here's what I discovered:\n\n${
+                formattedContent.map((item, index) => (
+                  `### ${index + 1}. ${item.title} - ${item.section} (Relevance: ${(item.similarity * 100).toFixed(0)}%)\n\n${item.content}${item.url ? `\n\nFor more information, visit the documentation, [here](${item.url})` : ''}`
+                )).join('\n\n')
+              }\n\nI hope this information helps! Is there anything specific you'd like me to explain further?`;
+      
+              history.done([
+                ...history.get(),
+                {
+                  role: "assistant",
+                  name: "search_documentation",
+                  content: responseContent,
+                },
+              ]);
+      
+              return (
+                <BotCard>
+                  <ReactMarkdown
+                    components={{
+                      code({ node, inline, className, children, ...props }: any) {
+                        const match = /language-(\w+)/.exec(className || '')
+                        return !inline && match ? (
+                          <pre className={`language-${match[1]}`}>
+                            <code className={`language-${match[1]}`} {...props}>
+                              {children}
+                            </code>
+                          </pre>
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        )
+                      },
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" />
+                      ),
+                    }}
+                  >
+                    {responseContent}
+                  </ReactMarkdown>
+                </BotCard>
+              );
+            } else {
+              return (
+                <BotCard>
+                  Sorry, I've searched our documentation, but I couldn't find any specific information about "{question}". 
+                </BotCard>
+              );
+            }
+          } catch (error) {
+            console.error("Error searching documentation:", error);
+            return (
+              <BotCard>
+                I apologize, but I encountered an issue while searching our documentation. 
+                Could you please try asking your question again? If the problem persists, it might be helpful to reach out to our support team.
+              </BotCard>
+            );
+          }
+        },
+      },
     },
   });
 
@@ -158,13 +253,8 @@ export type AIState = Array<{
   id?: number;
   name?:
     | "get_job_details"
-    | "explain_job_details"
-    | "get_partition_details"
+    | "search_documentation"
     | "get_node_details"
-    | "get_queue_details"
-    | "get_reservation_details"
-    | "get_accounting_details"
-    | "get_qos_details";
   role: "user" | "assistant" | "system";
   content: string;
 }>;
@@ -188,3 +278,11 @@ export const AI = createAI({
     },
   },
 });
+
+type RelevantContent = {
+  section: string;
+  content: string;
+  similarity: number;
+  title: string;
+  url: string | null;
+};

@@ -1,5 +1,5 @@
 import { CardTitle, CardContent, Card } from "@/components/ui/card";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 export function SlurmNodeDetails({ node }: any) {
   if (!node.nodes)

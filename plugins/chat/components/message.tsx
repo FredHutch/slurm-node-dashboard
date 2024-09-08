@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { SparkleIcon, SparklesIcon, UserIcon } from "lucide-react";
+import { SparklesIcon, UserIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 export function UserMessage({ children }: { children: ReactNode }) {

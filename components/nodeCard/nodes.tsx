@@ -10,8 +10,8 @@ import Stats from "./stats";
 import { Checkbox } from "../ui/checkbox";
 import { Skeleton } from "../ui/skeleton";
 import { LastUpdated } from "../last-updated";
-import ChatIcon from "../llm/chat-icon";
-import { FeatureEnabled } from "@/actions/env-enabled";
+import { openaiPluginMetadata } from "@/actions/plugins";
+import { ChatIcon } from "@/plugins/chat/components/chat-icon";
 import { Node } from "@/types/types";
 
 const nodeURL = "/api/slurm/nodes";
@@ -61,20 +61,10 @@ const Nodes = () => {
   const [selectedNodeFeature, setSelectedNodeFeature] = useState<string>(
     "allFeatures"
   );
-  const [slurmChatEnabled, setSlurmChatEnabled] = useState(false);
   const [dropdownOpenStatus, setDropdownOpenStatus] = useState({}) as any;
   const [cardSize, setCardSize] = useState<number>(getInitialCardSize);
   const [showStats, setShowStats] = useState<boolean>(getInitialShowStats);
   const systems: Node[] = nodeData?.nodes || [];
-
-  const checkEnabled = async (feature: string) => {
-    const response = await FeatureEnabled(feature);
-    setSlurmChatEnabled(response);
-  };
-
-  useEffect(() => {
-    checkEnabled("OPENAI_API_KEY");
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("cardSize", cardSize.toString());
@@ -219,7 +209,7 @@ const Nodes = () => {
   }
 
   return (
-    <div>
+    <div className="">
       <NodeHeader
         handleNodeStateChange={handleNodeStateChange}
         handleNodeTypeChange={handleNodeTypeChange}
@@ -279,7 +269,7 @@ const Nodes = () => {
         ))}
       </div>
       <LastUpdated data={nodeData?.last_update?.number} />
-      {slurmChatEnabled ? <ChatIcon /> : null}
+      {openaiPluginMetadata.isEnabled && <ChatIcon />}
     </div>
   );
 };

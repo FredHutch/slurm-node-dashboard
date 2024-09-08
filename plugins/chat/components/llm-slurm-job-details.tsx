@@ -1,6 +1,6 @@
 import { CardTitle, CardContent, Card } from "@/components/ui/card";
 import { convertUnixToHumanReadable } from "@/utils/nodes";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 export function SlurmJobDetails({ job }: any) {
   if (!job.jobs.length)

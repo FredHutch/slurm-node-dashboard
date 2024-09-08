@@ -1,6 +1,6 @@
 "use client";
-import { ChatList } from "@/components/llm/chat-list";
-import ChatScrollAnchor from "@/components/llm/chat-scroll-anchor";
+import { ChatList } from "@/plugins/chat/components/chat-list";
+import ChatScrollAnchor from "@/plugins/chat/components/chat-scroll-anchor";
 import { useEnterSubmit } from "@/lib/use-enter-submit";
 import TextareaAutosize from "react-textarea-autosize";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -9,10 +9,10 @@ import { ArrowUp, PlusIcon } from "lucide-react";
 import { z } from "zod";
 import { AI } from "@/actions/actions";
 import { useActions, useUIState } from "ai/rsc";
-import { BotMessage, UserMessage } from "@/components/llm/message";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { BotMessage, UserMessage } from "@/plugins/chat/components/message";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useEffect, useRef } from "react";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 const chatSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
