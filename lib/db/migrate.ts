@@ -4,7 +4,7 @@ import postgres from "postgres";
 
 const runMigrate = async () => {
   if (process.env.POSTGRES_URL) {
-    throw new Error("DATABASE_URL is not defined");
+    throw new Error("POSTGRES_URL is not defined");
   }
 
   const connection = postgres(process.env.POSTGRES_URL!, { max: 1 });
