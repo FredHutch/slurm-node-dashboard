@@ -224,7 +224,7 @@ FROM postgres:latest
 # Set environment variables for Postgres
 ENV POSTGRES_USER=user
 ENV POSTGRES_PASSWORD=password
-ENV POSTGRES_DB=embeddings
+ENV POSTGRES_DB=embed
 
 # Install the build dependencies
 USER root
