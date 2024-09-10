@@ -10,7 +10,7 @@ import { z } from "zod";
 import { AI } from "@/actions/actions";
 import { useActions, useUIState } from "ai/rsc";
 import { BotMessage, UserMessage } from "@/plugins/chat/components/message";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useEffect, useRef } from "react";
 import { Separator } from "@/components/ui/separator";
 
@@ -99,7 +99,7 @@ export default function ChatModal({ showChat, setShowChat }: any) {
         <Dialog open={showChat} onOpenChange={setShowChat}>
           <DialogContent aria-describedby={undefined} className="border-2 border-black shadow-xl w-[1200px] max-w-[80%] h-[1200px] max-h-[80%] flex flex-col p-0">
             <div className="p-3 px-5 mx-5">
-              <h1 className="text-2xl mb-2 font-extralight">Slurm Chat</h1>
+              <DialogTitle className="text-2xl mb-2 font-extralight">Slurm Chat</DialogTitle>
               <Separator />
             </div>
             <div

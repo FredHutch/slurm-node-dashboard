@@ -21,8 +21,6 @@ testdata.ts
 
 /public/modules.json
 
-/lib/db/migrations
-
 # misc
 .DS_Store
 *.pem
