@@ -19,7 +19,7 @@ const calculateTotalGPUUsage = (
 };
 
 const SmallCardContent: React.FC<{ name: string }> = ({ name }) => (
-  <div className="flex m-auto items-center justify-center w-full h-full">
+  <div className={`flex m-auto items-center justify-center w-full h-full`}>
     <div className="text-[12px]">{name}</div>
   </div>
 );
@@ -40,11 +40,11 @@ const MediumCardContent = ({
   return (
     <div className="flex flex-col h-full">
       <div className="p-1">
-        <div className="font-bold text-[10px] mb-.5">{name}</div>
-        <p className="font-light text-[9px]">
+        <div className="font-extrabold text-[10px] mb-.5">{name}</div>
+        <p className=" text-[9px]">
           CPU: {coresUsed} / {coresTotal}
         </p>
-        <p className="font-light text-[9px]">
+        <p className="text-[9px]">
           MEM: {(memoryUsed / 1024).toFixed(0)} /{" "}
           {(memoryTotal / 1024).toFixed(0)}
         </p>
@@ -74,17 +74,17 @@ const LargeCardContent = ({
   return (
     <div className="flex flex-col h-full p-1">
       <div className="flex-grow">
-        <div className="font-bold text-[12px] mb-1 truncate max-w-[140px]">
+        <div className="font-extrabold text-[12px] mb-1 truncate max-w-[140px]">
           {name}
         </div>
-        <p className="font-light text-[10px]">
+        <p className="font-bold text-[10px]">
           CPU: {coresUsed} / {coresTotal}
         </p>
-        <p className="font-light text-[10px]">
+        <p className="font-bold text-[10px]">
           MEM: {(memoryUsed / 1024).toFixed(0)} /{" "}
           {(memoryTotal / 1024).toFixed(0)}
         </p>
-        <p className="font-light text-[10px]">
+        <p className="font-bold text-[10px]">
           Load: {(nodeData.cpu_load / coresTotal).toFixed(2)}
         </p>
       </div>
@@ -97,27 +97,82 @@ const LargeCardContent = ({
   );
 };
 
-const getStatusColor = (status: string): string => {
+const getStatusColor = (
+  status: string,
+  colorSchema: string = "default"
+): { bgColor: string; textColor: string } => {
   const statusLevel = status[1] || status[0];
-  const colorMap: { [key: string]: string } = {
-    DRAIN: "bg-blue-400",
-    NOT_RESPONDING: "bg-blue-400",
-    DOWN: "bg-blue-400",
-    IDLE: "bg-green-700",
-    MIXED: "bg-orange-800",
-    PLANNED: "bg-indigo-500",
-    ALLOCATED: "bg-red-900",
-    COMPLETING: "bg-yellow-500",
-    RESERVED: "bg-indigo-800",
-    FUTURE: "bg-emerald-500",
-    REBOOT_REQUESTED: "bg-stone-500",
+  const colorMap: {
+    [key: string]: { [key: string]: { bgColor: string; textColor: string } };
+  } = {
+    default: {
+      DRAIN: { bgColor: "bg-blue-400", textColor: "text-white" },
+      NOT_RESPONDING: { bgColor: "bg-blue-400", textColor: "text-white" },
+      DOWN: { bgColor: "bg-blue-400", textColor: "text-white" },
+      IDLE: { bgColor: "bg-green-700", textColor: "text-white" },
+      MIXED: { bgColor: "bg-orange-800", textColor: "text-white" },
+      PLANNED: { bgColor: "bg-indigo-500", textColor: "text-white" },
+      ALLOCATED: { bgColor: "bg-red-900", textColor: "text-white" },
+      COMPLETING: { bgColor: "bg-yellow-500", textColor: "text-white" },
+      RESERVED: { bgColor: "bg-indigo-800", textColor: "text-white" },
+      FUTURE: { bgColor: "bg-emerald-500", textColor: "text-white" },
+      REBOOT_REQUESTED: { bgColor: "bg-stone-500", textColor: "text-white" },
+    },
+    vibrant: {
+      DRAIN: { bgColor: "bg-blue-600", textColor: "text-black" },
+      NOT_RESPONDING: { bgColor: "bg-blue-600", textColor: "text-black" },
+      DOWN: { bgColor: "bg-blue-600", textColor: "text-black" },
+      IDLE: { bgColor: "bg-green-500", textColor: "text-black" },
+      MIXED: { bgColor: "bg-orange-500", textColor: "text-black" },
+      PLANNED: { bgColor: "bg-indigo-600", textColor: "text-black" },
+      ALLOCATED: { bgColor: "bg-red-600", textColor: "text-black" },
+      COMPLETING: { bgColor: "bg-yellow-400", textColor: "text-black" },
+      RESERVED: { bgColor: "bg-indigo-600", textColor: "text-black" },
+      FUTURE: { bgColor: "bg-emerald-400", textColor: "text-black" },
+      REBOOT_REQUESTED: { bgColor: "bg-stone-600", textColor: "text-black" },
+    },
+    neon: {
+      DRAIN: { bgColor: "bg-blue-500", textColor: "text-black" },
+      NOT_RESPONDING: { bgColor: "bg-blue-500", textColor: "text-black" },
+      DOWN: { bgColor: "bg-blue-500", textColor: "text-black" },
+      IDLE: { bgColor: "bg-green-400", textColor: "text-black" },
+      MIXED: { bgColor: "bg-yellow-400", textColor: "text-black" },
+      PLANNED: { bgColor: "bg-purple-500", textColor: "text-black" },
+      ALLOCATED: { bgColor: "bg-pink-500", textColor: "text-black" },
+      COMPLETING: { bgColor: "bg-orange-400", textColor: "text-black" },
+      RESERVED: { bgColor: "bg-indigo-400", textColor: "text-black" },
+      FUTURE: { bgColor: "bg-teal-400", textColor: "text-black" },
+      REBOOT_REQUESTED: { bgColor: "bg-rose-400", textColor: "text-black" },
+    },
+    earth: {
+      DRAIN: { bgColor: "bg-sky-700", textColor: "text-white" },
+      NOT_RESPONDING: { bgColor: "bg-sky-700", textColor: "text-white" },
+      DOWN: { bgColor: "bg-sky-700", textColor: "text-white" },
+      IDLE: { bgColor: "bg-emerald-700", textColor: "text-white" },
+      MIXED: { bgColor: "bg-amber-700", textColor: "text-white" },
+      PLANNED: { bgColor: "bg-violet-700", textColor: "text-white" },
+      ALLOCATED: { bgColor: "bg-rose-700", textColor: "text-white" },
+      COMPLETING: { bgColor: "bg-yellow-700", textColor: "text-white" },
+      RESERVED: { bgColor: "bg-indigo-700", textColor: "text-white" },
+      FUTURE: { bgColor: "bg-teal-700", textColor: "text-white" },
+      REBOOT_REQUESTED: { bgColor: "bg-slate-700", textColor: "text-white" },
+    },
   };
-  return colorMap[statusLevel] || "bg-gray-900";
+  return (
+    colorMap[colorSchema]?.[statusLevel] ||
+    colorMap.default[statusLevel] || {
+      bgColor: "bg-gray-900",
+      textColor: "text-white",
+    }
+  );
 };
 
-export const NodeCard = (props: NodeCardProps) => {
+export const NodeCard = ({
+  colorSchema = "default",
+  ...props
+}: NodeCardProps & { colorSchema?: string }) => {
   const [open, setOpen] = useState(false);
-  const color = getStatusColor(props.status);
+  const { bgColor, textColor } = getStatusColor(props.status, colorSchema);
   const statusDef = getStatusDef(props.status);
   const cpuLoad = parseFloat(
     (props.nodeData.cpu_load / props.coresTotal).toFixed(2)
@@ -142,7 +197,7 @@ export const NodeCard = (props: NodeCardProps) => {
     <HoverCard>
       <HoverCardTrigger asChild>
         <div
-          className={`border-[1px] cursor-pointer m-0.5 p-1 rounded-[5px] text-card-foreground shadow-xl ${color} ${
+          className={`border-[1px] cursor-pointer m-0.5 p-1 rounded-[5px] shadow-xl ${bgColor} ${textColor} ${
             props.size === 50
               ? "w-[60px] h-[60px]"
               : props.size === 100

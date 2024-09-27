@@ -5,26 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Toaster, toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, Home, LogOut } from "lucide-react";
+import { Home, LogOut } from "lucide-react";
 import { generateEmbeddingsAction } from "@/plugins/chat/actions/embeddings";
-import { openaiPluginMetadata } from "@/actions/plugins";
+import ClusterStats from "./cluster-stats";
+import AdminPlugins from "./plugins";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { data: session } = useSession();
 
   const handleGenerateEmbeddings = async () => {
     setIsLoading(true);
@@ -67,61 +58,16 @@ export default function AdminDashboard() {
           </Button>
         </div>
       </div>
-
       <Separator />
-
       <div className="max-w-[90%] mx-auto w-[1000px]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Plugins Management</CardTitle>
-            <CardDescription>Manage and update plugin settings</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {openaiPluginMetadata.isEnabled ? (
-              <div className="space-y-4">
-                <Alert>
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertTitle>OpenAI Plugin Enabled</AlertTitle>
-                  <AlertDescription>
-                    The OpenAI Plugin is currently active and running.
-                  </AlertDescription>
-                </Alert>
-                <Button
-                  onClick={handleGenerateEmbeddings}
-                  disabled={isLoading}
-                  className="w-full"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating Embeddings...
-                    </>
-                  ) : (
-                    "Update Embeddings"
-                  )}
-                </Button>
-              </div>
-            ) : (
-              <Alert variant="destructive">
-                <XCircle className="h-4 w-4" />
-                <AlertTitle>Plugin Disabled</AlertTitle>
-                <AlertDescription>
-                  The OpenAI Plugin is currently not enabled. Please check your
-                  configuration.
-                </AlertDescription>
-              </Alert>
-            )}
-          </CardContent>
-          {error && (
-            <CardFooter>
-              <Alert variant="destructive" className="w-full">
-                <XCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            </CardFooter>
-          )}
-        </Card>
+        <AdminPlugins
+          handleGenerateEmbeddings={handleGenerateEmbeddings}
+          error={error}
+          isLoading={isLoading}
+        />
+        <div className="mt-5">
+          <ClusterStats />
+        </div>
       </div>
     </div>
   );

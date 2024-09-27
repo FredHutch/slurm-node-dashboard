@@ -3,7 +3,6 @@ import SystemHealth from "@/components/footer/systemHealth";
 import useSWR from "swr";
 import { Skeleton } from "../ui/skeleton";
 
-// Updated fetcher function with error handling
 const fetcher = async () => {
   const response = await fetch("/api/slurm/diag", {
     headers: { "Content-Type": "application/json" },
