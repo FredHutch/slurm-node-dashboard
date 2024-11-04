@@ -219,8 +219,8 @@ const Nodes = () => {
         handleNodePartitionsChange={handleNodePartitionsChange}
         handleNodeFeatureChange={handleNodeFeatureChange}
         handleColorSchemaChange={handleColorSchemaChange}
-        partitions={[]}
-        features={[]}
+        partitions={uniquePartitions}
+        features={uniqueFeatures}
         colorSchema={colorSchema}
       />
       <div className="flex justify-between">
