@@ -323,6 +323,12 @@ For support, please open an issue on our [GitHub repository](https://github.com/
 
 For direct inquiries, contact Johnathan Lee at [john.lee@thediymaker.com](mailto:john.lee@thediymaker.com).
 
+## Video
+
+[![Quickstart](https://i9.ytimg.com/vi_webp/wVEhPN-IqEA/mqdefault.webp?v=672baec2&sqp=CMzfrrkG&rs=AOn4CLC2W3aGhL-aE3lutuyoeui5_HQCMQ)](https://youtu.be/wVEhPN-IqEA)
+
+[![OOD iFrame](https://i9.ytimg.com/vi_webp/avLUYgMya98/mqdefault.webp?v=672bb041&sqp=CMzfrrkG&rs=AOn4CLAk24f70QoiM98TnT3jcD8AWAAoEQ)](https://youtu.be/avLUYgMya98)
+
 ## Gallery
 
 <details>
