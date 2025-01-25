@@ -18,50 +18,50 @@ const colorSchemaOptions: ColorSchemaOption[] = [
     value: "default",
     label: "Default",
     colors: [
-      "#60a5fa", // bg-blue-400 (DRAIN/DOWN)
+      "#60a5fa", // bg-blue-400 (DOWN)
       "#047857", // bg-green-700 (IDLE)
-      "#9333ea", // bg-indigo-500 (PLANNED)
-      "#7c2d12", // bg-red-900 (ALLOCATED)
+      "#9f1239", // bg-red-900 (ALLOCATED)
+      "#6366f1", // bg-indigo-500 (PLANNED)
     ],
   },
   {
-    value: "semantic",
-    label: "Semantic",
+    value: "marine",
+    label: "Marine",
     colors: [
-      "#b91c1c", // bg-red-700 (DOWN)
-      "#0369a1", // bg-blue-700 (ALLOCATED)
-      "#059669", // bg-emerald-600 (IDLE)
-      "#9333ea", // bg-purple-600 (PLANNED)
+      "#0891b2", // bg-cyan-600 (DOWN)
+      "#14b8a6", // bg-teal-500 (IDLE)
+      "#4338ca", // bg-indigo-700 (ALLOCATED)
+      "#2563eb", // bg-blue-600 (PLANNED)
     ],
   },
   {
-    value: "modern",
-    label: "Modern",
+    value: "forest",
+    label: "Forest",
     colors: [
-      "#e11d48", // bg-rose-700 (DOWN)
-      "#0284c7", // bg-sky-700 (ALLOCATED)
-      "#0d9488", // bg-teal-600 (IDLE)
+      "#059669", // bg-emerald-600 (DOWN)
+      "#22c55e", // bg-green-500 (IDLE)
+      "#065f46", // bg-emerald-800 (ALLOCATED)
+      "#15803d", // bg-green-700 (PLANNED)
+    ],
+  },
+  {
+    value: "sunset",
+    label: "Sunset",
+    colors: [
+      "#f97316", // bg-orange-500 (DOWN)
+      "#f59e0b", // bg-amber-500 (IDLE)
+      "#be123c", // bg-rose-700 (ALLOCATED)
+      "#dc2626", // bg-red-600 (PLANNED)
+    ],
+  },
+  {
+    value: "aurora",
+    label: "Aurora",
+    colors: [
+      "#8b5cf6", // bg-violet-500 (DOWN)
+      "#d946ef", // bg-fuchsia-500 (IDLE)
+      "#7e22ce", // bg-purple-700 (ALLOCATED)
       "#4f46e5", // bg-indigo-600 (PLANNED)
-    ],
-  },
-  {
-    value: "contrast",
-    label: "Contrast",
-    colors: [
-      "#7f1d1d", // bg-red-900 (DOWN)
-      "#1e3a8a", // bg-blue-900 (ALLOCATED)
-      "#065f46", // bg-emerald-800 (IDLE)
-      "#581c87", // bg-purple-800 (PLANNED)
-    ],
-  },
-  {
-    value: "soft",
-    label: "Soft",
-    colors: [
-      "#ef4444", // bg-red-500 (DOWN)
-      "#3b82f6", // bg-blue-500 (ALLOCATED)
-      "#10b981", // bg-emerald-500 (IDLE)
-      "#a855f7", // bg-purple-500 (PLANNED)
     ],
   },
 ];
