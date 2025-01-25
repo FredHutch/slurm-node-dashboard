@@ -17,22 +17,42 @@ const colorSchemaOptions: ColorSchemaOption[] = [
   {
     value: "default",
     label: "Default",
-    colors: ["#4CAF50", "#FFA500", "#FF0000", "#1E90FF"],
+    colors: [
+      "#047857", // bg-green-700
+      "#9333ea", // bg-indigo-500
+      "#7c2d12", // bg-red-900
+      "#1d4ed8", // bg-blue-400
+    ],
   },
   {
-    value: "vibrant",
-    label: "Vibrant",
-    colors: ["#00FF00", "#FF00FF", "#FFFF00", "#00FFFF"],
+    value: "frost",
+    label: "Frost",
+    colors: [
+      "#0891b2", // bg-cyan-600
+      "#0284c7", // bg-sky-700
+      "#4f46e5", // bg-indigo-600
+      "#0f766e", // bg-teal-600
+    ],
   },
   {
-    value: "neon",
-    label: "Neon",
-    colors: ["#39FF14", "#FF10F0", "#FFF01F", "#00FFFF"],
+    value: "sunset",
+    label: "Sunset",
+    colors: [
+      "#d97706", // bg-amber-600
+      "#e11d48", // bg-rose-600
+      "#db2777", // bg-pink-700
+      "#ea580c", // bg-orange-600
+    ],
   },
   {
     value: "earth",
     label: "Earth",
-    colors: ["#8B4513", "#228B22", "#B8860B", "#20B2AA"],
+    colors: [
+      "#047857", // bg-emerald-700
+      "#6d28d9", // bg-violet-700
+      "#b45309", // bg-amber-700
+      "#0369a1", // bg-sky-700
+    ],
   },
 ];
 

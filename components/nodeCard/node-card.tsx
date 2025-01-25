@@ -20,7 +20,7 @@ const calculateTotalGPUUsage = (
 
 const SmallCardContent: React.FC<{ name: string }> = ({ name }) => (
   <div className={`flex m-auto items-center justify-center w-full h-full`}>
-    <div className="text-[12px]">{name}</div>
+    <div className="font-extrabold text-[10px] mb-.5">{name}</div>
   </div>
 );
 
@@ -74,17 +74,17 @@ const LargeCardContent = ({
   return (
     <div className="flex flex-col h-full p-1">
       <div className="flex-grow">
-        <div className="font-extrabold text-[12px] mb-1 truncate max-w-[140px]">
+        <div className="font-extrabold text-[10px] mb-.5 truncate max-w-[140px]">
           {name}
         </div>
-        <p className="font-bold text-[10px]">
+        <p className="text-[9px]">
           CPU: {coresUsed} / {coresTotal}
         </p>
-        <p className="font-bold text-[10px]">
+        <p className="text-[9px]">
           MEM: {(memoryUsed / 1024).toFixed(0)} /{" "}
           {(memoryTotal / 1024).toFixed(0)}
         </p>
-        <p className="font-bold text-[10px]">
+        <p className="text-[9px]">
           Load: {(nodeData.cpu_load / coresTotal).toFixed(2)}
         </p>
       </div>
@@ -118,31 +118,31 @@ const getStatusColor = (
       FUTURE: { bgColor: "bg-emerald-500", textColor: "text-white" },
       REBOOT_REQUESTED: { bgColor: "bg-stone-500", textColor: "text-white" },
     },
-    vibrant: {
-      DRAIN: { bgColor: "bg-blue-600", textColor: "text-black" },
-      NOT_RESPONDING: { bgColor: "bg-blue-600", textColor: "text-black" },
-      DOWN: { bgColor: "bg-blue-600", textColor: "text-black" },
-      IDLE: { bgColor: "bg-green-500", textColor: "text-black" },
-      MIXED: { bgColor: "bg-orange-500", textColor: "text-black" },
-      PLANNED: { bgColor: "bg-indigo-600", textColor: "text-black" },
-      ALLOCATED: { bgColor: "bg-red-600", textColor: "text-black" },
-      COMPLETING: { bgColor: "bg-yellow-400", textColor: "text-black" },
-      RESERVED: { bgColor: "bg-indigo-600", textColor: "text-black" },
-      FUTURE: { bgColor: "bg-emerald-400", textColor: "text-black" },
-      REBOOT_REQUESTED: { bgColor: "bg-stone-600", textColor: "text-black" },
+    frost: {
+      DRAIN: { bgColor: "bg-cyan-600", textColor: "text-white" },
+      NOT_RESPONDING: { bgColor: "bg-cyan-600", textColor: "text-white" },
+      DOWN: { bgColor: "bg-cyan-600", textColor: "text-white" },
+      IDLE: { bgColor: "bg-teal-600", textColor: "text-white" },
+      MIXED: { bgColor: "bg-sky-700", textColor: "text-white" },
+      PLANNED: { bgColor: "bg-blue-600", textColor: "text-white" },
+      ALLOCATED: { bgColor: "bg-indigo-600", textColor: "text-white" },
+      COMPLETING: { bgColor: "bg-slate-600", textColor: "text-white" },
+      RESERVED: { bgColor: "bg-blue-700", textColor: "text-white" },
+      FUTURE: { bgColor: "bg-cyan-700", textColor: "text-white" },
+      REBOOT_REQUESTED: { bgColor: "bg-slate-700", textColor: "text-white" },
     },
-    neon: {
-      DRAIN: { bgColor: "bg-blue-500", textColor: "text-black" },
-      NOT_RESPONDING: { bgColor: "bg-blue-500", textColor: "text-black" },
-      DOWN: { bgColor: "bg-blue-500", textColor: "text-black" },
-      IDLE: { bgColor: "bg-green-400", textColor: "text-black" },
-      MIXED: { bgColor: "bg-yellow-400", textColor: "text-black" },
-      PLANNED: { bgColor: "bg-purple-500", textColor: "text-black" },
-      ALLOCATED: { bgColor: "bg-pink-500", textColor: "text-black" },
-      COMPLETING: { bgColor: "bg-orange-400", textColor: "text-black" },
-      RESERVED: { bgColor: "bg-indigo-400", textColor: "text-black" },
-      FUTURE: { bgColor: "bg-teal-400", textColor: "text-black" },
-      REBOOT_REQUESTED: { bgColor: "bg-rose-400", textColor: "text-black" },
+    sunset: {
+      DRAIN: { bgColor: "bg-amber-600", textColor: "text-white" },
+      NOT_RESPONDING: { bgColor: "bg-amber-600", textColor: "text-white" },
+      DOWN: { bgColor: "bg-amber-600", textColor: "text-white" },
+      IDLE: { bgColor: "bg-orange-600", textColor: "text-white" },
+      MIXED: { bgColor: "bg-rose-600", textColor: "text-white" },
+      PLANNED: { bgColor: "bg-red-600", textColor: "text-white" },
+      ALLOCATED: { bgColor: "bg-pink-700", textColor: "text-white" },
+      COMPLETING: { bgColor: "bg-orange-700", textColor: "text-white" },
+      RESERVED: { bgColor: "bg-rose-700", textColor: "text-white" },
+      FUTURE: { bgColor: "bg-amber-700", textColor: "text-white" },
+      REBOOT_REQUESTED: { bgColor: "bg-neutral-700", textColor: "text-white" },
     },
     earth: {
       DRAIN: { bgColor: "bg-sky-700", textColor: "text-white" },
@@ -199,12 +199,12 @@ export const NodeCard = ({
         <div
           className={`border-[1px] cursor-pointer m-0.5 p-1 rounded-[5px] shadow-xl ${bgColor} ${textColor} ${
             props.size === 50
-              ? "w-[60px] h-[60px]"
+              ? "w-[80px] h-[25px]"
               : props.size === 100
-              ? "w-[90px] h-[90px]"
+              ? "w-[80px] h-[70px]"
               : props.size === 150
-              ? "w-[130px] h-[100px]"
-              : "w-[100px] h-[100px]"
+              ? "w-[80px] h-[85px]"
+              : "w-[80px] h-[70px]"
           } ${cpuLoad > 125 ? "animate-pulse border-black" : ""}`}
           onClick={props.historical ? undefined : openModal}
         >
