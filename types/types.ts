@@ -1,5 +1,9 @@
 // Node and Resource Related Interfaces
 export interface Node {
+  cpu_load: any;
+  name: any;
+  hostname: any;
+  state: any;
   alloc_memory: number;
   real_memory: number;
   alloc_cpus: number;

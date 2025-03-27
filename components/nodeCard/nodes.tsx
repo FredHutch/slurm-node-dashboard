@@ -2,9 +2,8 @@
 
 import { NodeCard } from "@/components/nodeCard/node-card";
 import GroupedNodes from "@/components/grouped-nodes";
-import useSWR from "swr";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import NodeHeader from "./node-header";
 import CardSkeleton from "./card-skeleton";
 import { Slider } from "../ui/slider";
@@ -19,30 +18,48 @@ import NodeCount from "./node-counts";
 import ChatIcon from "../llm/chat-icon";
 import { openaiPluginMetadata } from "@/actions/plugins";
 import { LogicType } from "@/components/feature-selector";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-const nodeURL = "/api/slurm/nodes";
-const nodeFetcher = async () => {
-  const res = await fetch(nodeURL, {
+// Fallback to the API endpoint for now
+const fetchNodes = async () => {
+  const res = await fetch("/api/slurm/nodes", {
     headers: {
       "Content-Type": "application/json",
     },
-    next: { revalidate: 15 },
+    cache: "no-store",
   });
+
   if (!res.ok) {
     throw new Error("Network response was not ok");
   }
+
   return res.json();
 };
 
 const Nodes = () => {
+  const queryClient = useQueryClient();
+
+  // Use the fetch function directly instead of the server action for now
   const {
     data: nodeData,
     error: nodeError,
     isLoading: nodeIsLoading,
-    mutate,
-  } = useSWR(nodeURL, nodeFetcher, {
-    refreshInterval: 15000,
+    refetch: refetchNodes,
+  } = useQuery({
+    queryKey: ["nodes"],
+    queryFn: fetchNodes,
+    refetchInterval: 15000,
+    staleTime: 10000,
   });
+
+  console.log("Node data:", nodeData); // Debug log
+  console.log("Node error:", nodeError); // Debug log
+
+  // Function to manually refresh data
+  const mutate = useCallback(() => {
+    refetchNodes();
+    queryClient.invalidateQueries({ queryKey: ["power"] });
+  }, [refetchNodes, queryClient]);
 
   const getInitialCardSize = () => {
     if (typeof window !== "undefined") {
@@ -139,15 +156,6 @@ const Nodes = () => {
   useEffect(() => {
     localStorage.setItem("featureLogicType", featureLogicType);
   }, [featureLogicType]);
-
-  // Set up polling for data updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      mutate();
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, [mutate]);
 
   const uniquePartitions = useMemo(() => {
     const partitions = new Set<string>();
@@ -264,9 +272,9 @@ const Nodes = () => {
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          {nodeError.message === "Network response was not ok"
-            ? "Failed to load, please check your network connection."
-            : "Session expired, please reload the page."}
+          {nodeError instanceof Error && nodeError.message
+            ? nodeError.message
+            : "Failed to load node data. Please check your network connection."}
         </AlertDescription>
       </Alert>
     );
@@ -309,6 +317,17 @@ const Nodes = () => {
         <Separator />
         <CardSkeleton qty={300} size={85} />
       </div>
+    );
+  }
+
+  if (!nodeData || !nodeData.nodes) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No node data received. Please check API connection.
+        </AlertDescription>
+      </Alert>
     );
   }
 
@@ -355,7 +374,7 @@ const Nodes = () => {
         />
       </div>
       {showStats && nodeData ? (
-        <Stats data={nodeData} colorSchema={colorSchema} />
+        <Stats data={{ ...nodeData }} colorSchema={colorSchema} />
       ) : null}
       <Separator />
 

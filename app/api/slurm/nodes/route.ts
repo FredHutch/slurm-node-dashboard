@@ -1,19 +1,22 @@
+// app/api/slurm/nodes/route.ts
 import { NextResponse } from "next/server";
-import { env } from "process";
+import { getNodes } from "@/actions/slurm";
 
 export async function GET() {
-  const res = await fetch(
-    `http://${env.SLURM_SERVER}:6820/slurm/${env.SLURM_API_VERSION}/nodes`,
-    {
-      headers: {
-        "X-SLURM-USER-NAME": `${env.SLURM_API_ACCOUNT}`,
-        "X-SLURM-USER-TOKEN": `${env.SLURM_API_TOKEN}`,
-      },
-      next: {
-        revalidate: 30,
-      }
-    }
-  );
-  const data = await res.json();
-  return NextResponse.json(data);
+  // This route maintains backward compatibility with existing code
+  // It calls our server action and returns the result in the expected format
+  try {
+    const nodeData = await getNodes();
+    // Return the response in the same format as before
+    return NextResponse.json({
+      nodes: nodeData.nodes,
+      last_update: nodeData.last_update,
+    });
+  } catch (error) {
+    console.error("Error in Slurm nodes route:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch node data" },
+      { status: 500 }
+    );
+  }
 }

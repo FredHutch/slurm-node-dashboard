@@ -4,13 +4,22 @@ import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from "recharts";
 import { Activity, Cpu, Database, Power, RefreshCw } from "lucide-react";
 import { parseGPUResources } from "@/utils/gpu-parse";
 import { CustomTooltip } from "./stats-power-tooltip";
-import useSWR from "swr";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getPowerData } from "@/actions/slurm";
 import SystemActivityBanner from "./stats-activity";
 
-// SWR fetcher function
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch data");
+const fetchPowerData = async () => {
+  const res = await fetch("/api/slurm/power", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+
   return res.json();
 };
 
@@ -19,38 +28,59 @@ const Stats = memo(
     data,
     colorSchema = "default",
   }: {
-    data: { nodes: any[] };
+    data: { nodes: any[]; powerData?: any };
     colorSchema?: string;
   }) => {
+    const queryClient = useQueryClient();
     const nodes = data?.nodes ?? [];
 
+    // Check if we already have power data from the parent component's query
     const [isPrometheusAvailable, setIsPrometheusAvailable] = React.useState<
       boolean | null
     >(null);
-    const shouldFetch = isPrometheusAvailable !== false;
 
+    // Use existing power data if available, otherwise fetch it
+    const existingPowerData = data.powerData;
+    const shouldFetch = isPrometheusAvailable !== false && !existingPowerData;
+
+    // Query for power data if not already provided
     const {
       data: ipmiData,
       error,
-      isValidating,
-      mutate,
-    } = useSWR(shouldFetch ? "/api/prometheus/ipmi" : null, fetcher, {
-      fallbackData: { status: 404, data: [], summary: null },
-      onError: (err) => {
-        console.error("Prometheus endpoint error:", err);
-        setIsPrometheusAvailable(false);
-      },
-      onSuccess: (data) => {
-        // Only consider Prometheus available if we got actual data
-        setIsPrometheusAvailable(
-          data.status === 200 && !data.summary?.noPrometheusData
-        );
-      },
+      isLoading,
+      refetch,
+    } = useQuery({
+      queryKey: ["power"],
+      queryFn: fetchPowerData,
+      enabled: shouldFetch,
+      staleTime: 30000,
     });
 
-    const prometheusAvailable = isPrometheusAvailable === true;
-    const prometheusData = ipmiData?.data || [];
-    const powerSummary = ipmiData?.summary;
+    // Handle query results with useEffect instead of callbacks
+    React.useEffect(() => {
+      if (error) {
+        console.error("Prometheus endpoint error:", error);
+        setIsPrometheusAvailable(false);
+      }
+
+      if (ipmiData) {
+        // Only consider Prometheus available if we got actual data
+        setIsPrometheusAvailable(
+          ipmiData.status === 200 && !ipmiData.summary?.noPrometheusData
+        );
+      }
+    }, [error, ipmiData]);
+
+    // Use existing power data if available, otherwise use fetched data
+    const powerData = existingPowerData || ipmiData;
+    const isValidating = isLoading;
+
+    const prometheusAvailable =
+      isPrometheusAvailable === true ||
+      (existingPowerData?.status === 200 &&
+        !existingPowerData?.summary?.noPrometheusData);
+    const prometheusData = powerData?.data || [];
+    const powerSummary = powerData?.summary;
 
     // Compute aggregated stats using reduce for clarity
     const stats = useMemo(() => {
@@ -110,12 +140,12 @@ const Stats = memo(
     }, [nodes, prometheusAvailable]);
 
     const currentTotal =
-      prometheusAvailable && !ipmiData?.summary?.noPrometheusData
+      prometheusAvailable && !powerData?.summary?.noPrometheusData
         ? powerSummary?.currentTotal || 0
         : stats.totalPowerUsage;
 
     const averagePower =
-      prometheusAvailable && !ipmiData?.summary?.noPrometheusData
+      prometheusAvailable && !powerData?.summary?.noPrometheusData
         ? powerSummary?.currentAverage || 0
         : stats.totalPowerNodes > 0
         ? stats.totalPowerUsage / stats.totalPowerNodes
@@ -123,7 +153,7 @@ const Stats = memo(
 
     const hasPowerData =
       (prometheusAvailable &&
-        !ipmiData?.summary?.noPrometheusData &&
+        !powerData?.summary?.noPrometheusData &&
         currentTotal > 0) ||
       (!prometheusAvailable && stats.totalPowerUsage > 0);
 
@@ -175,6 +205,11 @@ const Stats = memo(
 
     const showPowerCard =
       isValidating || (hasPowerData && (currentTotal > 0 || averagePower > 0));
+
+    // Function to manually refresh power data
+    const mutate = () => {
+      queryClient.invalidateQueries({ queryKey: ["power"] });
+    };
 
     return (
       <div className="space-y-4 mb-4">
@@ -274,12 +309,7 @@ const Stats = memo(
                 <div className="flex items-center space-x-2">
                   <Power className="h-4 w-4 text-muted-foreground" />
                   <button
-                    onClick={() =>
-                      mutate(undefined, {
-                        optimisticData: ipmiData,
-                        rollbackOnError: true,
-                      })
-                    }
+                    onClick={() => mutate()}
                     disabled={isValidating}
                     title="Refresh"
                     className="focus:outline-none"
