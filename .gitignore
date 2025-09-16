@@ -22,7 +22,6 @@ testdata.ts
 # production
 /build
 
-/public/modules.json
 
 # misc
 .DS_Store

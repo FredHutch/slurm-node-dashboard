@@ -17,13 +17,13 @@ async function fetchData(): Promise<Item[]> {
   const filePath = path.join(process.cwd(), "public", "modules.json");
   try {
     const jsonData = await fs.readFile(filePath, "utf-8");
-    const data: Item[] = JSON.parse(jsonData);
+    const data: Item[] = []; //JSON.parse(jsonData);
     if (!Array.isArray(data) || data.length === 0) {
       throw new Error("No valid data");
     }
     return data;
   } catch (err) {
-    console.error("Error reading or parsing modules.json:", err);
+    //console.error("Error reading or parsing modules.json:", err);
     return [];
   }
 }
