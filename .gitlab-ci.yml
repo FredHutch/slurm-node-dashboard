@@ -3,11 +3,10 @@ variables:
   DOCKER_DRIVER: "overlay2"   # helpful but not sufficient without the --storage-driver above
   DOCKER_BUILDKIT: "1"
 
-privileged: true
-
 services:
   - name: docker:25.0.3-dind
     command:
+      - "--data-root=/dind" #  # avoid any host bind at /var/lib/docker
       # Prefer overlay2; if your runner kernel lacks overlayfs, switch to --storage-driver=vfs
       - "--storage-driver=overlay2"
 
