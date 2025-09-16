@@ -25,7 +25,7 @@ const Footer = ({ cluster, logo }: any) => {
         <div className="text-sm font-bold flex justify-between items-center p-2 mx-auto">
           <div className="flex items-center space-x-5">
             <img src={logo} alt="Logo" className="w-8 h-8" />
-            <span className="text-blue-400 uppercase">{cluster}</span>
+            <span className="text-blue-400">{cluster}</span>
             <span>Current System Status:</span>
             <Skeleton className="w-12 h-4" />
             <span>Slurm Release:</span>
@@ -46,7 +46,7 @@ const Footer = ({ cluster, logo }: any) => {
         <div className="text-sm font-bold flex justify-between items-center p-2 mx-auto text-red-500">
           <div className="flex items-center space-x-5">
             <img src={logo} alt="Logo" className="w-8 h-8" />
-            <span className="text-blue-400 uppercase">{cluster}</span>
+            <span className="text-blue-400">{cluster}</span>
             <span>
               Error: Unable to fetch system status. Please try again later.
             </span>
@@ -67,7 +67,7 @@ const Footer = ({ cluster, logo }: any) => {
       <div className="text-sm font-bold flex justify-between items-center p-2 mx-auto">
         <div className="flex items-center space-x-5">
           <img src={logo} alt="Logo" className="w-8 h-8" />
-          <span className="text-blue-400 uppercase">{cluster}</span>
+          <span className="text-blue-400">{cluster}</span>
           <span>Current System Status:</span>
           <SystemHealth status={healthStatus} />
           <span>Slurm Release: {slurmRelease}</span>

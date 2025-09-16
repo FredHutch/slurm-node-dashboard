@@ -8,8 +8,8 @@ import { AI } from "@/actions/actions";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: `${env.CLUSTER_NAME} Supercomputer`,
-  description: "A Slurm supercomputer dashboard.",
+  title: `${env.CLUSTER_NAME} cluster dashboard`,
+  description: "A Slurm cluster dashboard.",
   icons: {
     icon: "/favicon.ico",
     apple: [

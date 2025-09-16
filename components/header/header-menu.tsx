@@ -21,12 +21,12 @@ export default function HeaderMenu() {
         <DropdownMenuItem className="font-light cursor-pointer" asChild>
           <Link href={"/"}>Home</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="font-light cursor-pointer" asChild>
+        {/*<DropdownMenuItem className="font-light cursor-pointer" asChild>
           <Link href={"/modules"}>Modules</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="font-light cursor-pointer" asChild>
+        </DropdownMenuItem>*/}
+        {/*<DropdownMenuItem className="font-light cursor-pointer" asChild>
           <Link href={"/rewind"}>Historical</Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem>*/}
         <DropdownMenuItem className="font-light cursor-pointer" asChild>
           <Link
             target="_blank"

@@ -366,7 +366,7 @@ const Nodes = () => {
           colorSchema={colorSchema}
         />
       ) : (
-        <div className="flex flex-wrap p-3 uppercase mb-20">
+        <div className="flex flex-wrap p-3 mb-20">
           {filteredNodes.map((node: any) => (
             <NodeCard
               size={cardSize}

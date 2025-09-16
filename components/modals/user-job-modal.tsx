@@ -283,7 +283,7 @@ const UserJobModal: React.FC<UserJobModalProps> = ({
           jobData?.errors?.length === 0 &&
           jobData?.jobs?.length > 0 ? (
           <div>
-            <h1 className="text-2xl mb-2 font-extralight uppercase">
+            <h1 className="text-2xl mb-2 font-extralight">
               {searchID}
             </h1>
             <DialogTitle className="mb-5">User Job Details</DialogTitle>

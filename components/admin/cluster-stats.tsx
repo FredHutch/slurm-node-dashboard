@@ -100,7 +100,7 @@ const ClusterStats: React.FC = () => {
                     >
                       <div className="flex items-center space-x-2 mb-2">
                         <Server className="h-4 w-4" />
-                        <h3 className="text-sm font-semibold text-gray-300 uppercase">
+                        <h3 className="text-sm font-semibold text-gray-300">
                           {item.type} {item.name}
                         </h3>
                       </div>

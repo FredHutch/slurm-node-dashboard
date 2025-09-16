@@ -167,7 +167,7 @@ const FeatureSelector: React.FC<FeatureSelectorProps> = ({
                           />
                           <label
                             htmlFor={`selected-feature-${feature}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer uppercase flex-grow"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-grow"
                           >
                             {feature}
                           </label>
@@ -218,7 +218,7 @@ const FeatureSelector: React.FC<FeatureSelectorProps> = ({
                           />
                           <label
                             htmlFor={`feature-${feature}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer uppercase"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                           >
                             {feature}
                           </label>

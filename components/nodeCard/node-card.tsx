@@ -46,7 +46,7 @@ const MediumCardContent = ({
     <div className="flex flex-col h-full">
       <div className="p-1 space-y-1">
         <div className="w-full">
-          <div className="font-extrabold text-[10px] leading-tight uppercase truncate">
+          <div className="font-extrabold text-[10px] leading-tight truncate">
             {name}
           </div>
         </div>
@@ -84,7 +84,7 @@ const LargeCardContent = ({
     <div className="flex flex-col h-full">
       <div className="p-1 space-y-1">
         <div className="w-full">
-          <div className="font-extrabold text-[10px] leading-tight uppercase truncate">
+          <div className="font-extrabold text-[10px] leading-tight truncate">
             {name}
           </div>
         </div>

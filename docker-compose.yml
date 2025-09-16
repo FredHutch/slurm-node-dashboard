@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+  slurm-node-dashboard:
+    image: sc-registry.fredhutch.org/slurm-node-dashboard:latest
+    networks:
+      - sc-swarm-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.slurm-node-dashboard.rule=Host(`gizmo-dashboard.fredhutch.org`)"
+        - "traefik.http.routers.slurm-node-dashboard-secured.rule=Host(`gizmo-dashboard.fredhutch.org`)"
+        - "traefik.http.routers.slurm-node-dashboard.entrypoints=web,web-secured"
+        - "traefik.http.services.slurm-node-dashboard.loadbalancer.server.port=3000" # it seems you always need to give traefik a port so it 'notices' the service
+        - "traefik.http.routers.slurm-node-dashboard.tls=true"
+
+networks:
+  sc-swarm-net:
+    external: true

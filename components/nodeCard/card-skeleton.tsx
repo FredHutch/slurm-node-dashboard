@@ -3,7 +3,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export function CardSkeleton({ qty, size }: CardSkeletonProps) {
   return (
-    <div className="flex flex-wrap p-3 uppercase">
+    <div className="flex flex-wrap p-3">
       {Array.from({ length: qty }).map((_, index) => (
         <Skeleton
           key={index}
