@@ -22,7 +22,7 @@ build:
   stage: build
   script:
     - echo $DOTENV_FILE_CONTENTS | base64 -d > .env
-    - docker build -t sc-registry.fredhutch.org/slurm-node-dashboard:test .
+    - docker build --no-cache -t sc-registry.fredhutch.org/slurm-node-dashboard:test .
     - docker push sc-registry.fredhutch.org/slurm-node-dashboard:test
 
 test:
