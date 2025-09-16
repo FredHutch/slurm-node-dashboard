@@ -1,5 +1,16 @@
 variables:
   CI_DEBUG_SERVICES: "true"
+  DOCKER_DRIVER: "overlay2"   # helpful but not sufficient without the --storage-driver above
+  DOCKER_BUILDKIT: "1"
+
+privileged: true
+
+services:
+  - name: docker:25.0.3-dind
+    command:
+      # Prefer overlay2; if your runner kernel lacks overlayfs, switch to --storage-driver=vfs
+      - "--storage-driver=overlay2"
+
 
 before_script:
   - apk update
@@ -12,6 +23,9 @@ before_script:
   - mkdir -p $HOME/.docker
   - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
   - set -x
+  - docker version
+  - docker info | sed -n 's/^Storage Driver: //p'
+
 
 stages:
   - build
