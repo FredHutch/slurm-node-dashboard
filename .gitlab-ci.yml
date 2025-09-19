@@ -27,9 +27,11 @@ build:
     # Seems like the issue may be the multi-stage build and how it works
     # with ZFS. So for now I am building the image manually and
     # manually pushing it to the registry.
+    # So we need to pull it here:
+    - docker pull sc-registry.fredhutch.org/slurm-node-dashboard:test
     # - docker build --no-cache -t sc-registry.fredhutch.org/slurm-node-dashboard:test .
     # - docker push sc-registry.fredhutch.org/slurm-node-dashboard:test
-    echo nothing to see here
+    - echo nothing to see here
 
 test:
   stage: test
